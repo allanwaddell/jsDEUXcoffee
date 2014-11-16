@@ -1,31 +1,11 @@
-#SRC_BASE_DIR = "public/javascripts/backbone"
-#DEST_BASE_DIR = "app/coffeescripts/backbone"
-SRC_BASE_DIR = "spec/javascripts"
-DEST_BASE_DIR = "spec/coffeescripts"
-JS2COFFEE = "~/node_modules/js2coffee/bin/js2coffee"
+#!/bin/bash
+
+SRC_BASE_DIR=../strut-engine/app/**/*.js
+JS2COFFEE=~/node_modules/js2coffee/bin/js2coffee
  
-dirs = []
-files = []
- 
-Dir.glob("#{SRC_BASE_DIR}/**/*.js").each do |file|
-  files << file
-  dir =  File.dirname(file).split(SRC_BASE_DIR)[1]
-  dirs << dir unless dirs.include?(dir) 
-end
- 
-puts dirs
- 
-dirs.each do |dir|
-  IO.popen("mkdir -p #{DEST_BASE_DIR}#{dir}")
-end
- 
-files.each do |file|
-  # convert
-  relative_path =  File.dirname(file).split(SRC_BASE_DIR)[1]
-  basename = File.basename(file, ".js")
-  output_file = "#{DEST_BASE_DIR}#{relative_path}/#{basename}.coffee"
-  puts "#{JS2COFFEE} #{file} > #{output_file}"
-  `#{JS2COFFEE} #{file} > #{output_file}`
-  puts "Removing #{file}"
-  `rm #{file}`
-end
+for file in $SRC_BASE_DIR 
+do
+  echo "${file%.js}.coffee"
+  echo js2coffee -i4 -sq --verbose $file > "${file%.js}.coffee"
+  js2coffee -i4 -sq --verbose $file > "${file%.js}.coffee"
+done
